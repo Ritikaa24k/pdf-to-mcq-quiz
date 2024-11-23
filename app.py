@@ -93,7 +93,17 @@ def main():
     if 'quiz_submitted' not in st.session_state:
         st.session_state.quiz_submitted = False
 
-    uploaded_file = st.file_uploader("Upload PDF", type=["pdf"])
+    st.write("**Upload a PDF file (max size: 1 MB)**")
+    uploaded_file = st.file_uploader("Upload your PDF here", type=["pdf"])
+
+    if uploaded_file:
+        if uploaded_file.size > 1 * 1024 * 1024:  # set 1 MB limit
+            st.error("The uploaded file exceeds the 1 MB size limit. Please upload a smaller file.")
+    else:
+        st.success("File uploaded successfully!")
+
+
+
     num_questions = st.slider("Number of Questions", min_value=1, max_value=10, value=5)
 
     if uploaded_file and st.button("Generate Quiz"):
@@ -127,7 +137,7 @@ def main():
                 # Retrieving previous answer if any
                 prev_answer = st.session_state.user_answers.get(idx, "Select an answer")
 
-                # Disable the radio buttons once the quiz is submitted
+                # Disabling the radio buttons once the quiz is submitted
                 disabled = st.session_state.quiz_submitted
 
                 user_choice = st.radio(
